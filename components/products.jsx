@@ -1,6 +1,62 @@
+import Emoji from "@/components/emoji";
 import Link from "next/link";
 import { bn, money, unit } from "@/lib/format.mjs";
-export function Change({ change }) { const direction = change.dir; return <span className={`change ${direction}`} aria-label={`দাম ${direction === "up" ? "বেড়েছে" : direction === "down" ? "কমেছে" : "অপরিবর্তিত"}`} >{direction === "up" ? "▲" : direction === "down" ? "▼" : "—"} {bn(Math.abs(change.pct), 1)}%</span>; }
-export function ProductCard({ product: p }) { return <Link className="product-card" href={`/product/${p.slug}`}><div className="product-heading"><span className="product-emoji" aria-hidden="true">{p.image}</span><div><h3>{p.nameBn}</h3><p>প্রতি {unit(p.unit)}</p></div><span className="card-arrow" aria-hidden="true">↗</span></div><div className="product-price"><div><small>আজকের দাম</small><strong>{money(p.today)}</strong></div><Change change={p.change}/></div></Link>; }
-export function ProductGrid({ products }) { return <div className="product-grid">{products.map(p => <ProductCard key={p.id} product={p}/>)}</div>; }
-export function SkeletonGrid() { return <div className="container section" aria-busy="true" role="status"><span className="sr-only">পণ্যের তথ্য লোড হচ্ছে…</span><div className="skeleton heading-skeleton"/><div className="product-grid">{Array.from({length:9},(_,i)=><div key={i} className="skeleton card-skeleton"/>)}</div></div>; }
+export function Change({ change }) {
+  const direction = change.dir;
+  return (
+    <span
+      className={`change ${direction}`}
+      aria-label={`দাম ${direction === "up" ? "বেড়েছে" : direction === "down" ? "কমেছে" : "অপরিবর্তিত"}`}
+    >
+      {direction === "up" ? "▲" : direction === "down" ? "▼" : "—"}{" "}
+      {bn(Math.abs(change.pct), 1)}%
+    </span>
+  );
+}
+export function ProductCard({ product: p }) {
+  return (
+    <Link className="product-card" href={`/product/${p.slug}`}>
+      <div className="product-heading">
+        <span className="product-emoji" aria-hidden="true">
+          <Emoji symbol={p.image} />
+        </span>
+        <div>
+          <h3>{p.nameBn}</h3>
+          <p>প্রতি {unit(p.unit)}</p>
+        </div>
+        <span className="card-arrow" aria-hidden="true">
+          ↗
+        </span>
+      </div>
+      <div className="product-price">
+        <div>
+          <small>আজকের দাম</small>
+          <strong>{money(p.today)}</strong>
+        </div>
+        <Change change={p.change} />
+      </div>
+    </Link>
+  );
+}
+export function ProductGrid({ products }) {
+  return (
+    <div className="product-grid">
+      {products.map((p) => (
+        <ProductCard key={p.id} product={p} />
+      ))}
+    </div>
+  );
+}
+export function SkeletonGrid() {
+  return (
+    <div className="container section" aria-busy="true" role="status">
+      <span className="sr-only">পণ্যের তথ্য লোড হচ্ছে…</span>
+      <div className="skeleton heading-skeleton" />
+      <div className="product-grid">
+        {Array.from({ length: 9 }, (_, i) => (
+          <div key={i} className="skeleton card-skeleton" />
+        ))}
+      </div>
+    </div>
+  );
+}

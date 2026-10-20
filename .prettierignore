@@ -1,0 +1,7 @@
+node_modules
+.next
+.env
+*.db*
+playwright-report
+test-results
+docs/assignment-original.md
