@@ -6,7 +6,7 @@ A visitor opens `/`. Next.js runs `app/page.jsx` on the server. It fetches produ
 
 ## Components and props
 
-A component is a reusable piece of interface. `ProductCard` displays one product; `ProductGrid` maps the product array into cards. `product={p}` is a prop: the parent passes one product into the child. `Header`, `Footer` and the forms are also components.
+A component is a reusable piece of interface. `ProductCard` displays one product; `ProductGrid` maps the product array into cards. `product={p}` is a prop: the parent passes one product into the child. `Header`, `CategoryNav`, `Footer` and the forms are also components. The header renders independently of the category and ticker requests, so Login/Sign up remain available during slow API calls.
 
 ## Server vs client components
 
@@ -39,6 +39,10 @@ Authentication establishes **who** the visitor is. Better Auth hashes/checks pas
 Protection determines whether a particular request may see a page. `requireSession` reads the request cookies through Better Auth on the server. With no valid session it calls `redirect` to Sign In before protected content is returned. Hiding links alone would not protect a route.
 
 Signup sets `autoSignIn:false`, so the visitor goes to Sign In. Successful email or social sign-in goes to Home, exactly as specified by the rubric. The `next` parameter records the originally requested URL for context; the current implementation intentionally follows the rubric's Home destination after login.
+
+## Logout
+
+`components/logout-button.jsx` calls Better Auth's `signOut` endpoint, which invalidates the server session. A full navigation to Home clears the old signed-in client router state. `RouteNotice` shows a logout-success toast on that fresh page. The button is shared by the header and Profile. The acceptance test also sends the old cookie after logout to confirm it no longer authenticates, then tests a second login/logout cycle.
 
 ## Databases and migration
 

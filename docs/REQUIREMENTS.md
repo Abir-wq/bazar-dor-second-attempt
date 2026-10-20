@@ -41,6 +41,10 @@
 | Submission live + repository URLs                              | README placeholders                                                    | Fill with your URLs                                   |
 | Full-mark deadline                                             | Original rubric: Oct 10, 2026 11:59 PM                                 | Instructor decision; late cap applies unless extended |
 
+## Authentication update
+
+The header's Login/Sign up controls now render before category/ticker data is fetched and remain visible during session lookup. Bilingual labels clarify the actions. The shared Logout button is available in the header and Profile. Auth/profile forms are disabled until their event handlers are ready and use `method="post"` to avoid a native GET submission containing credentials. Tests cover repeated login/logout, reuse of an invalidated cookie, slow session lookup and JavaScript-disabled form behavior. These improvements do not configure Google/GitHub credentials or deploy the website.
+
 ## Design notes
 
 The Figma/Penpot files were inspected alongside the original rubric. The implementation preserves the green `#05893e` palette, pale `#f0f5f0` surfaces, supplied logo/hero assets, two-row navigation, ticker, three-column cards and market table structure. It includes additional useful search/filter controls and original profile screens. A pixel-perfect match has not been certified; review against your design file before submission.

@@ -7,6 +7,10 @@ A Bengali price-tracking application for Bangladesh's everyday essentials. Built
 - **Live site:** ADD_YOUR_DEPLOYED_URL
 - **GitHub repository:** ADD_YOUR_REPOSITORY_URL
 
+## Login/logout update
+
+Login and Sign up buttons now include English labels and remain visible during session lookup. Authentication controls render independently of product/category API requests. A shared Logout button appears in the header and on My Profile; logout revokes the server session and loads a fresh Home page. Use `START-WINDOWS.cmd` or the `npm.cmd` commands in `START-HERE.md` on Windows.
+
 ## Start here
 
 **New to Next.js? Read [START-HERE.md](START-HERE.md).** No code needs to be pasted into separate files: this folder is the complete source project.

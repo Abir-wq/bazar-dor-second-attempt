@@ -925,3 +925,69 @@ form .password-field {
 .asset-credit a {
   text-decoration: underline;
 }
+
+.auth-label {
+  display: grid;
+  gap: 1px;
+  line-height: 1.05;
+  text-align: center;
+}
+.auth-label small {
+  font-size: 10px;
+  line-height: 1.1;
+  opacity: 0.85;
+}
+.category-nav-loading {
+  height: 48px;
+  border-radius: 0;
+}
+.ticker-loading {
+  height: 38px;
+  border-radius: 0;
+}
+.nav-unavailable {
+  padding-block: 10px;
+  color: var(--muted);
+  font-size: 13px;
+}
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 560px) {
+  .auth-nav .btn {
+    height: 40px;
+  }
+  .auth-label small {
+    font-size: 9px;
+  }
+}
+
+.header-top .brand {
+  min-width: 0;
+}
+.brand > span {
+  min-width: 0;
+}
+.brand img {
+  flex-shrink: 0;
+}
+.brand small,
+.brand strong {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.auth-nav {
+  flex-shrink: 0;
+}
+@media (max-width: 560px) {
+  .auth-nav .user-name {
+    max-width: 50px;
+  }
+  .auth-nav .profile-link > svg {
+    display: none;
+  }
+}

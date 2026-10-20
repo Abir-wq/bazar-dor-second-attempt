@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
+import { useHydrated } from "@/lib/use-hydrated";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { authClient } from "@/lib/auth-client";
 export default function ProfileForm({ initialName }) {
+  const hydrated = useHydrated();
   const [name, setName] = useState(initialName),
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
@@ -38,10 +40,11 @@ export default function ProfileForm({ initialName }) {
     <section className="profile-card">
       <p className="eyebrow">আমার প্রোফাইল</p>
       <h1>তথ্য আপডেট করুন</h1>
-      <form onSubmit={update} noValidate>
+      <form method="post" onSubmit={update} noValidate>
         <label>
           নাম
           <input
+            disabled={!hydrated}
             name="name"
             className="input input-bordered"
             value={name}
@@ -56,7 +59,10 @@ export default function ProfileForm({ initialName }) {
             {error}
           </p>
         )}
-        <button className="btn btn-primary full-width" disabled={busy}>
+        <button
+          className="btn btn-primary full-width"
+          disabled={busy || !hydrated}
+        >
           {busy ? "আপডেট হচ্ছে…" : "তথ্য আপডেট করুন"}
         </button>
         <Link className="btn btn-ghost full-width" href="/profile">

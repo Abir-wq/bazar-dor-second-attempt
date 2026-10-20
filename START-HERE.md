@@ -1,5 +1,24 @@
 # Start here — beginner guide
 
+## Login/logout update
+
+The top-right buttons now show **Login** and **Sign up** in English underneath the Bengali labels. They stay visible while the session check is pending, and the header no longer waits for market-data API requests. Once you log in, your name and **Logout** appear. You can also log out on **My Profile**. A fresh Home page loads after successful logout. Login inputs/buttons briefly stay disabled until the form is interactive, preventing an early native submission.
+
+On Windows, you can double-click **START-WINDOWS.cmd** inside the project folder to install, set up the database and start the app. It uses `npm.cmd`, so PowerShell's `npm.ps1` script restriction is avoided. Install Node.js 24 LTS first.
+
+If you prefer a PowerShell terminal, run these one at a time from the folder containing `package.json`:
+
+```powershell
+npm.cmd ci
+npm.cmd run setup
+npm.cmd run db:migrate
+npm.cmd run dev
+```
+
+Create your own account at `/signup`, then sign in at `/signin`. No demo account is pre-created. Google/GitHub still require the provider settings described in the deployment guide.
+
+When updating an existing installation, stop the old server with Ctrl+C first. Keep your local `.env` and `bazar.db` files if you want to retain settings/accounts. The ZIP does not include or replace those files. Extract the updated source over your existing project, then run the commands above. If you use a separate new folder instead, copy your existing `.env` and local SQLite database there while the server is stopped, or create a new account in the new installation.
+
 ## 1. What you received
 
 `bazar-dor` is a complete project folder. Keep all its files together. You do **not** need to create a new Next.js app, paste each file individually or run `create-next-app`.

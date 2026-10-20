@@ -1,4 +1,24 @@
-# Verification record
+# Authentication update verification — October 21, 2026
+
+The updated code passed lint, formatting checks, all 3 unit tests, and a fresh production build. All **4 production browser acceptance tests passed** against a temporary PGlite PostgreSQL-compatible TCP server through the app's normal `pg` driver (about 41 seconds).
+
+The updated tests verify:
+
+- Registration, invalid-password feedback, login and session persistence.
+- Protected product/profile pages, all market rows and persistent profile updates.
+- Logout from Profile and a second logout from the header after logging in again.
+- A captured pre-logout session cookie returns no authenticated session after logout.
+- Login/Sign up controls remain visible while session lookup is delayed.
+- A JavaScript-disabled browser receives a disabled login form using POST; passwords cannot be submitted by a native GET form.
+- Catalog/category behavior and responsive layout assertions remain passing.
+
+The account controls now render independently from market-data requests. The logout endpoint invalidates the server session, then a fresh navigation resets the client page state and shows the logout-success toast.
+
+These tests used a production build locally; they do not confirm an actual hosted deployment, real Google/GitHub OAuth credentials, or execution of the Windows launcher on your machine. The launcher contains standard `npm.cmd` setup/start commands; follow `START-HERE.md` if a local environment error occurs.
+
+---
+
+# Original release verification record
 
 Verified on October 21, 2026 (Europe/Berlin), with Node.js 24 and the committed lockfile.
 

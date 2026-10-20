@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LogoutButton from "@/components/logout-button";
 import { requireSession } from "@/lib/session";
 export const metadata = { title: "আমার প্রোফাইল" };
 export default async function Profile() {
@@ -17,9 +18,12 @@ export default async function Profile() {
           <dt>ইমেইল</dt>
           <dd className="profile-email">{user.email}</dd>
         </dl>
-        <Link className="btn btn-primary" href="/profile/edit">
-          তথ্য আপডেট করুন
-        </Link>
+        <div className="profile-actions">
+          <Link className="btn btn-primary" href="/profile/edit">
+            তথ্য আপডেট করুন
+          </Link>
+          <LogoutButton className="btn btn-outline" />
+        </div>
       </section>
     </div>
   );

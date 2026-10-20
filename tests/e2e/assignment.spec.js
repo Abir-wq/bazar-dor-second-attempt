@@ -140,8 +140,85 @@ test("server protection, validation, register, login, profile update, persistenc
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBeTruthy();
-  await page.getByRole("button", { name: "সাইন আউট", exact: true }).click();
+  const signedInCookies = (await page.context().cookies())
+    .map((c) => `${c.name}=${c.value}`)
+    .join("; ");
+  await page
+    .locator(".profile-actions")
+    .getByRole("button", { name: "সাইন আউট", exact: true })
+    .click();
   await expect(page).toHaveURL("/");
+  await expect(page.getByText("সফলভাবে সাইন আউট হয়েছে।")).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "সাইন ইন", exact: true }),
+  ).toBeVisible();
+  const oldSession = await page.request.get("/api/auth/get-session", {
+    headers: { Cookie: signedInCookies },
+  });
+  expect(await oldSession.json()).toBeNull();
   await page.goto("/profile/edit");
   await expect(page).toHaveURL(/\/signin/);
+  await page.locator('input[name="email"]').fill(email);
+  await page.locator('input[name="password"]').fill(password);
+  await page.getByRole("button", { name: "সাইন ইন করুন", exact: true }).click();
+  await expect(page).toHaveURL("/");
+  await expect(
+    page.getByRole("link", { name: "Updated Shopper" }),
+  ).toBeVisible();
+  await Promise.all([
+    page.waitForEvent("domcontentloaded"),
+    page
+      .locator(".auth-nav")
+      .getByRole("button", { name: "সাইন আউট", exact: true })
+      .click(),
+  ]);
+  await expect(page).toHaveURL("/");
+  await expect(
+    page
+      .locator(".auth-nav")
+      .getByRole("link", { name: "সাইন ইন", exact: true }),
+  ).toBeVisible();
+  await page.goto("/product/sorno-machi-chal");
+  await expect(page).toHaveURL(/\/signin/);
+});
+
+test("login controls remain visible while session lookup is pending", async ({
+  page,
+}) => {
+  await page.route("**/api/auth/get-session*", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await route.continue();
+  });
+  await page.goto("/signin", { waitUntil: "commit" });
+  await expect(
+    page.getByRole("link", { name: "সাইন ইন", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page
+      .locator(".auth-nav")
+      .getByRole("link", { name: "সাইন আপ", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "সাইন ইন / Login", exact: true }),
+  ).toBeVisible();
+  await expect(page.locator(".auth-nav")).toHaveAttribute("aria-busy", "false");
+});
+
+test("unhydrated login form cannot submit credentials as a GET query", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto("http://localhost:3000/signin");
+  await expect(page.locator(".auth-card form")).toHaveAttribute(
+    "method",
+    "post",
+  );
+  await expect(
+    page.locator('.auth-card input[name="password"]'),
+  ).toBeDisabled();
+  await expect(
+    page.getByRole("button", { name: "সাইন ইন করুন", exact: true }),
+  ).toBeDisabled();
+  await context.close();
 });

@@ -1,6 +1,7 @@
 "use client";
 import Emoji from "@/components/emoji";
 import { useState } from "react";
+import { useHydrated } from "@/lib/use-hydrated";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
@@ -8,6 +9,7 @@ import toast from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react";
 export default function AuthForm({ mode, providers }) {
   const signup = mode === "signup";
+  const hydrated = useHydrated();
   const router = useRouter();
   const [busy, setBusy] = useState(false),
     [show, setShow] = useState(false),
@@ -36,6 +38,8 @@ export default function AuthForm({ mode, providers }) {
         : await authClient.signIn.email({ email, password });
       if (result.error)
         throw new Error(result.error.message || "আবার চেষ্টা করুন।");
+      if (!signup)
+        await authClient.getSession({ query: { disableCookieCache: true } });
       toast.success(
         signup
           ? "অ্যাকাউন্ট তৈরি হয়েছে। এখন সাইন ইন করুন।"
@@ -73,17 +77,18 @@ export default function AuthForm({ mode, providers }) {
       <div className="auth-icon">
         <Emoji symbol="🛒" />
       </div>
-      <h1>{signup ? "নতুন অ্যাকাউন্ট তৈরি করুন" : "আবার স্বাগতম!"}</h1>
+      <h1>{signup ? "সাইন আপ / Create account" : "সাইন ইন / Login"}</h1>
       <p className="muted">
         {signup
           ? "বাজার দর জানতে আমাদের সঙ্গে যুক্ত হোন।"
           : "আপনার অ্যাকাউন্টে সাইন ইন করুন।"}
       </p>
-      <form onSubmit={submit} noValidate>
+      <form method="post" onSubmit={submit} noValidate>
         {signup && (
           <label>
             নাম
             <input
+              disabled={!hydrated}
               name="name"
               className="input input-bordered"
               autoComplete="name"
@@ -97,6 +102,7 @@ export default function AuthForm({ mode, providers }) {
         <label>
           ইমেইল
           <input
+            disabled={!hydrated}
             name="email"
             className="input input-bordered"
             type="email"
@@ -109,6 +115,7 @@ export default function AuthForm({ mode, providers }) {
           পাসওয়ার্ড
           <div className="password-field">
             <input
+              disabled={!hydrated}
               name="password"
               className="input input-bordered"
               type={show ? "text" : "password"}
@@ -131,7 +138,10 @@ export default function AuthForm({ mode, providers }) {
             {error}
           </p>
         )}
-        <button className="btn btn-primary full-width" disabled={busy}>
+        <button
+          className="btn btn-primary full-width"
+          disabled={busy || !hydrated}
+        >
           {busy && <span className="loading loading-spinner loading-xs" />}
           {busy ? "অপেক্ষা করুন…" : signup ? "রেজিস্টার করুন" : "সাইন ইন করুন"}
         </button>
@@ -140,14 +150,14 @@ export default function AuthForm({ mode, providers }) {
       <div className="social-buttons">
         <button
           className="btn btn-outline"
-          disabled={busy}
+          disabled={busy || !hydrated}
           onClick={() => social("google")}
         >
           <span className="google-g">G</span> Google
         </button>
         <button
           className="btn btn-outline"
-          disabled={busy}
+          disabled={busy || !hydrated}
           onClick={() => social("github")}
         >
           <svg

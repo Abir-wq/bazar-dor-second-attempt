@@ -1,31 +1,11 @@
 "use client";
-import Emoji from "@/components/emoji";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { UserRound } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-import toast from "react-hot-toast";
-import { useState } from "react";
-import { LogOut, UserRound } from "lucide-react";
-export default function Header({ categories, date }) {
-  const pathname = usePathname();
-  const router = useRouter();
+import LogoutButton from "@/components/logout-button";
+export default function Header({ date }) {
   const { data: session, isPending } = authClient.useSession();
-  const [busy, setBusy] = useState(false);
-  async function logout() {
-    setBusy(true);
-    try {
-      const r = await authClient.signOut();
-      if (r.error) throw new Error(r.error.message);
-      toast.success("সফলভাবে সাইন আউট হয়েছে।");
-      router.push("/");
-      router.refresh();
-    } catch (e) {
-      toast.error(e.message || "আবার চেষ্টা করুন।");
-    } finally {
-      setBusy(false);
-    }
-  }
   return (
     <header className="site-header">
       <div className="container header-top">
@@ -36,58 +16,42 @@ export default function Header({ categories, date }) {
             <small>{date}</small>
           </span>
         </Link>
-        <div className="auth-nav">
-          {isPending ? (
-            <span
-              className="skeleton auth-skeleton"
-              aria-label="প্রোফাইল লোড হচ্ছে"
-            />
-          ) : session ? (
+        <div className="auth-nav" aria-busy={isPending}>
+          {session ? (
             <>
-              <Link href="/profile" className="btn btn-ghost btn-sm">
+              <Link
+                href="/profile"
+                className="btn btn-ghost btn-sm profile-link"
+              >
                 <UserRound size={16} />
                 <span className="user-name">{session.user.name}</span>
               </Link>
-              <button
-                className="btn btn-outline btn-sm"
-                onClick={logout}
-                disabled={busy}
-              >
-                <LogOut size={15} />
-                <span>{busy ? "অপেক্ষা করুন" : "সাইন আউট"}</span>
-              </button>
+              <LogoutButton />
             </>
           ) : (
             <>
-              <Link href="/signin" className="btn btn-ghost btn-sm">
-                সাইন ইন
+              <Link
+                href="/signin"
+                className="btn btn-ghost btn-sm"
+                aria-label="সাইন ইন"
+              >
+                <span className="auth-label">
+                  সাইন ইন<small>Login</small>
+                </span>
               </Link>
-              <Link href="/signup" className="btn btn-primary btn-sm">
-                সাইন আপ
+              <Link
+                href="/signup"
+                className="btn btn-primary btn-sm"
+                aria-label="সাইন আপ"
+              >
+                <span className="auth-label">
+                  সাইন আপ<small>Sign up</small>
+                </span>
               </Link>
             </>
           )}
         </div>
       </div>
-      <nav className="category-nav" aria-label="পণ্যের বিভাগ">
-        <div className="container nav-links">
-          {categories.map((c) => (
-            <Link
-              href={`/category/${c.slug}`}
-              key={c.slug}
-              aria-current={
-                pathname === `/category/${c.slug}` ? "page" : undefined
-              }
-              className={`category-chip ${pathname === `/category/${c.slug}` ? "active" : ""}`}
-            >
-              <span>
-                <Emoji symbol={c.icon} />
-              </span>
-              {c.nameBn}
-            </Link>
-          ))}
-        </div>
-      </nav>
     </header>
   );
 }

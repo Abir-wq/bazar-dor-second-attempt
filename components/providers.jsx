@@ -30,6 +30,8 @@ export function RouteNotice() {
       error = params.get("error");
     if (reason === "protected")
       toast.error("বিস্তারিত দেখতে প্রথমে সাইন ইন করুন।", { id: "protected" });
+    else if (notice === "logout")
+      toast.success("সফলভাবে সাইন আউট হয়েছে।", { id: "logout" });
     else if (notice === "social")
       toast.success("সফলভাবে সাইন ইন হয়েছে।", { id: "social" });
     else if (error)
