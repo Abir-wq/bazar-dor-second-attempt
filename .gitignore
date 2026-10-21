@@ -7,3 +7,4 @@ node_modules/
 *.db-*
 playwright-report/
 test-results/
+.neon
